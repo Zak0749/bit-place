@@ -1,25 +1,23 @@
 use actix_files::{Files, NamedFile};
 use actix_redis::RedisActor;
-use actix_web::{get, middleware::Logger, web::Data, App, HttpServer, Responder, Result};
+use actix_web::{get, middleware::Logger, web::Data, App, HttpServer, Responder};
 use backend::api;
 use backend::sockets;
-use std::path::PathBuf;
 
 #[get("/")]
-async fn index() -> Result<impl Responder> {
-    Ok(NamedFile::open(
-        "/usr/local/public/index.html".parse::<PathBuf>().unwrap(),
-    )?)
+async fn index() -> impl Responder {
+    NamedFile::open("/usr/local/public/index.html").unwrap()
 }
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| {
-        let redis_addr = RedisActor::start("db:6379");
+    env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 
-        println!("server status up db-con: {}", redis_addr.connected());
+    log::info!("starting HTTP server at http://localhost:8080");
+
+    HttpServer::new(|| {
         App::new()
-            .app_data(Data::new(redis_addr))
+            .app_data(Data::new(RedisActor::start("db:6379")))
             .service(index)
             .service(sockets::routes())
             .service(api::routes())
