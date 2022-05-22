@@ -10,10 +10,9 @@ pub struct Point {
     y: i32,
 }
 
-#[get("/point/{x}/{y}")] // , redis: Data<Addr<RedisActor>>
+#[get("/point/{x}/{y}")]
 pub async fn route(redis: Data<Addr<RedisActor>>, point: web::Path<Point>) -> Result<HttpResponse> {
     log::info!("{:?}", point);
-    // Ok(HttpResponse::Ok().body(format!("{:?}", point)))
     let data = redis
         .send(Command(resp_array![
             "GET",

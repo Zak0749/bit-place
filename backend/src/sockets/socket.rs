@@ -67,7 +67,6 @@ impl Handler<SetPoint> for Session {
         Ok(())
     }
 }
-// impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for Session {
 
 #[get("")]
 pub async fn route(
