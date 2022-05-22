@@ -2,7 +2,7 @@ use actix_files::{Files, NamedFile};
 use actix_redis::RedisActor;
 use actix_web::{get, middleware::Logger, web::Data, App, HttpServer, Responder};
 use backend::api;
-use backend::sockets;
+use backend::sockets::{self, Server};
 use dotenv::dotenv;
 use std::env;
 
@@ -22,12 +22,14 @@ async fn main() -> std::io::Result<()> {
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 
     log::info!("starting HTTP server at http://localhost:8080");
+    let redis = RedisActor::start(env::var("REDIS_URL").expect("REDIS_URL must be set d:db:6379"));
 
-    HttpServer::new(|| {
+    let server = Server::new(redis.clone());
+
+    HttpServer::new(move || {
         App::new()
-            .app_data(Data::new(RedisActor::start(
-                env::var("REDIS_URL").expect("REDIS_URL must be set d:db:6379"),
-            )))
+            .app_data(Data::new(redis.clone()))
+            .app_data(Data::new(server.clone()))
             .service(index)
             .service(sockets::routes())
             .service(api::routes())
