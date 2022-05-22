@@ -29,7 +29,6 @@ impl Session {
         let id = self.id;
         ctx.run_interval(HEARTBEAT_INTERVAL, move |act, ctx| {
             if Instant::now().duration_since(act.hb) > CLIENT_TIMEOUT {
-                println!("Websocket Client heartbeat failed, disconnecting!");
                 act.server.do_send(server::Disconnect { id });
                 ctx.stop();
                 return;
@@ -72,8 +71,10 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for Session {
             Ok(ws::Message::Pong(_)) => {
                 self.hb = Instant::now();
             }
-            Err(err) => println!("Protocol error: {:?}", err),
-            u => println!("Unexpected message: {:?}", u),
+            Ok(ws::Message::Close(_)) => {
+                ctx.stop();
+            }
+            _ => (),
         }
     }
 }

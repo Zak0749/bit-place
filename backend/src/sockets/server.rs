@@ -23,10 +23,6 @@ impl Server {
 
 impl Actor for Server {
     type Context = Context<Self>;
-
-    fn started(&mut self, _ctx: &mut Self::Context) {
-        println!("a sever started");
-    }
 }
 
 #[derive(Message)]

@@ -20,10 +20,7 @@ async fn main() -> std::io::Result<()> {
     dotenv().ok();
 
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
-
-    log::info!("starting HTTP server at http://localhost:8080");
     let redis = RedisActor::start(env::var("REDIS_URL").expect("REDIS_URL must be set d:db:6379"));
-
     let server = Server::new(redis.clone());
 
     HttpServer::new(move || {
