@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use actix::Addr;
 use actix_redis::{resp_array, Command, RedisActor, RespValue};
 use actix_web::{error, get, web::Data, Result};
