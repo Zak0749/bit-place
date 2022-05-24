@@ -25,5 +25,6 @@ WORKDIR /app
 COPY --from=backend /app/target/release/backend /usr/local/bin
 COPY --from=frontend /app/public /usr/local/public
 EXPOSE 8080
-ENV REDIS_URL = "db:6379"
+ENV REDIS_URL "db:6379"
+ENV PUBLIC_DIR "/usr/local/public"
 ENTRYPOINT ["/usr/local/bin/backend"]
