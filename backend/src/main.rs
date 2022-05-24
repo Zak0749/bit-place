@@ -22,6 +22,7 @@ async fn main() -> std::io::Result<()> {
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
     let redis = RedisActor::start(env::var("REDIS_URL").expect("REDIS_URL must be set d:db:6379"));
     let server = Server::new(redis.clone());
+    let public_dir = env::var("PUBLIC_DIR").expect("PUBLIC_DIR must be set d:/usr/local/public/");
 
     HttpServer::new(move || {
         App::new()
@@ -30,10 +31,7 @@ async fn main() -> std::io::Result<()> {
             .service(index)
             .service(sockets::routes())
             .service(api::routes())
-            .service(Files::new(
-                "/",
-                env::var("PUBLIC_DIR").expect("PUBLIC_DIR must be set d:/usr/local/public/"),
-            ))
+            .service(Files::new("/", public_dir.clone()))
             .wrap(Logger::default())
     })
     .bind(("0.0.0.0", 8080))?
