@@ -25,6 +25,6 @@ pub async fn route(redis: Data<Addr<RedisActor>>, point: web::Path<Point>) -> Re
         Ok(HttpResponse::Ok().body(result))
     } else {
         println!("error: {:?}", data);
-        Ok(HttpResponse::InternalServerError().body("null lol"))
+        Ok(HttpResponse::InternalServerError().body("null"))
     }
 }
