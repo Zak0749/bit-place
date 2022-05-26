@@ -1,36 +1,24 @@
-<script>
-	import { onMount } from "svelte";
-	onMount(async function () {
-    const response = await fetch("/api/message");
-    const data = await response.text();
-    name = data;
-  });
-	let name = ""
+<script lang="ts">
+  import Grid from './components/grid.svelte'
+  import Editor from './components/editor.svelte'
 </script>
 
-<main>
-	<h1>Hello {name}!!!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+<main >
+  <Grid><Editor /></Grid>
+    
 </main>
 
+
 <style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
+  main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-	h1 {
-		color: #0004ff;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
+  main {
+    position: relative;
+    width: 500px;
+    height: 500px;
+  }
 </style>
